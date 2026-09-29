@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Secrets / credentials — NEVER commit these
+.env
+credentials.json
+client_secret_*.json
+token.pkl
+*.pkl
+
+# Large / regeneratable data — see main.py to rebuild
+/data/raw/
+/data/vectorstore/
+/data/corpora/*/corpus.jsonl
+/data/traces/
+/data/processed/
+/data/prompts/
+
+# (data/corpora/*/queries.jsonl and data/seed/*.jsonl are intentionally
+#  NOT ignored — they're small "seed" fixtures kept under version control.)
+
+# IDE / OS
+.idea/
+.vscode/
+.kilo/
+.DS_Store
+
+# Logs
+*.log
+*.tmp
+*.sqlite
+*.db

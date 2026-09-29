@@ -1,0 +1,5 @@
+# Normalize line endings; large/regeneratable data is gitignored (see
+# .gitignore) rather than tracked via Git LFS, so no LFS filters are
+# declared here.
+* text=auto eol=lf
+*.jsonl text eol=lf
