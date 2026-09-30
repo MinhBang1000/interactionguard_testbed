@@ -1,14 +1,24 @@
+from typing import Optional
+
 from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 
 from src import settings
 
-LLM = ChatOpenAI(
-    model=settings.AGENT_MODEL,
-    temperature=settings.AGENT_TEMPERATURE,
-    openai_api_key=settings.OPENAI_API_KEY,
-    openai_api_base=settings.OPENAI_BASE_URL,
-)
+_llm: Optional[ChatOpenAI] = None
+
+
+def get_llm() -> ChatOpenAI:
+    """Lazy singleton — avoids failing at import time when OPENAI_API_KEY is unset."""
+    global _llm
+    if _llm is None:
+        _llm = ChatOpenAI(
+            model=settings.AGENT_MODEL,
+            temperature=settings.AGENT_TEMPERATURE,
+            openai_api_key=settings.OPENAI_API_KEY,
+            openai_api_base=settings.OPENAI_BASE_URL,
+        )
+    return _llm
 
 SYSTEM_PROMPT = SystemMessage(
     content=(

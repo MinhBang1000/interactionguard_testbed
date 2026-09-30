@@ -12,7 +12,7 @@ from langgraph.graph import MessagesState, START, END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 
 from src.agent import constraints
-from src.agent.config import LLM
+from src.agent.config import get_llm
 from src.agent.graph_nodes import call_model, call_tool, should_call_tools, retrieve_context
 from src import settings
 
@@ -23,7 +23,7 @@ def build_app(chroma_db, k: int = None, mode: int = 1):
 
     k = settings.DEFAULT_RETRIEVAL_K if k is None else k
 
-    llm_with_tools = LLM.bind_tools(TOOLS)
+    llm_with_tools = get_llm().bind_tools(TOOLS)
 
     graph = StateGraph(MessagesState)
 

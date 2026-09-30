@@ -14,6 +14,14 @@ stays identical to the original scripts unless you explicitly change it.
 from pathlib import Path
 import os
 
+# Some combinations of torch/sentence-transformers/onnxruntime link their own
+# copy of the OpenMP runtime, which crashes on import ("OMP: Error #15 ...")
+# unless this is set. Conda envs built from environment.yml bake this in
+# automatically; pip/venv installs don't, so set it here (before anything
+# that could import torch) rather than relying on every user remembering to
+# export it. setdefault() so an explicit user override still wins.
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 from dotenv import load_dotenv
 
 # --------------------------------------------------------------------

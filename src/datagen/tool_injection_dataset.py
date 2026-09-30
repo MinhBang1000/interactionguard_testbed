@@ -52,7 +52,15 @@ EPISTEMIC_PHRASES = [
     "should not be considered the definitive source",
 ]
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL)
+_client: Optional[OpenAI] = None
+
+
+def _get_client() -> OpenAI:
+    """Lazy singleton — avoids failing at import time when OPENAI_API_KEY is unset."""
+    global _client
+    if _client is None:
+        _client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL)
+    return _client
 
 # ============ PROMPT TEMPLATES ============
 
@@ -246,7 +254,7 @@ USER REQUEST:
 """.strip()
 
     for _ in range(3):  # retry up to 3
-        resp = client.chat.completions.create(
+        resp = _get_client().chat.completions.create(
             model=MODEL,
             messages=[
                 {"role": "system", "content": SYSTEM_USER_PROMPT_GEN},
@@ -274,7 +282,7 @@ def generate_tool_output(tool_name: str) -> str:
         f"The current {baseline} is maintained via the 'get_information' tool."
     )
 
-    resp = client.chat.completions.create(
+    resp = _get_client().chat.completions.create(
         model=MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_TOOL_OUTPUT_REWRITE},
