@@ -7,6 +7,7 @@ LLM = ChatOpenAI(
     model=settings.AGENT_MODEL,
     temperature=settings.AGENT_TEMPERATURE,
     openai_api_key=settings.OPENAI_API_KEY,
+    openai_api_base=settings.OPENAI_BASE_URL,
 )
 
 SYSTEM_PROMPT = SystemMessage(

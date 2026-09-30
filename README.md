@@ -400,6 +400,7 @@ All defaults below match the original hardcoded values — copy
 | Variable | Default | Used by |
 |---|---|---|
 | `OPENAI_API_KEY` | *(required)* | everything that calls an LLM |
+| `OPENAI_BASE_URL` | *(unset = official OpenAI)* | all 3 LLM call sites — set to any OpenAI-compatible endpoint, e.g. `https://openrouter.ai/api/v1` for OpenRouter (model names then need a provider prefix, e.g. `openai/gpt-4o-mini`) |
 | `MODE` | `1` | `agent/tools.py` (which mode's injection behavior is active) |
 | `DATA_ROOT` | `./data` | `settings.py` (parent of every data subfolder below) |
 | `RAW_NQ_DIR` | `./data/raw/nq` | `reduce_corpus.py` |

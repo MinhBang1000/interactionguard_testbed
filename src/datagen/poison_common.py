@@ -92,7 +92,12 @@ def generate_poison_corpus(
     if not settings.OPENAI_API_KEY:
         raise RuntimeError("Missing OPENAI_API_KEY (.env)")
 
-    llm = ChatOpenAI(model=gen_model, temperature=0.6, openai_api_key=settings.OPENAI_API_KEY)
+    llm = ChatOpenAI(
+        model=gen_model,
+        temperature=0.6,
+        openai_api_key=settings.OPENAI_API_KEY,
+        openai_api_base=settings.OPENAI_BASE_URL,
+    )
 
     benign_db = setup_rag(mode=1)
     print("[RAG] Benign Chroma DB loaded successfully")

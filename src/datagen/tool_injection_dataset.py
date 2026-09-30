@@ -52,7 +52,7 @@ EPISTEMIC_PHRASES = [
     "should not be considered the definitive source",
 ]
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+client = OpenAI(api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL)
 
 # ============ PROMPT TEMPLATES ============
 

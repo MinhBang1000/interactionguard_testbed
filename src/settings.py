@@ -84,6 +84,13 @@ TOKEN_PATH = Path(os.getenv("TOKEN_PATH", PROJECT_ROOT / "token.pkl"))
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+# Point at any OpenAI-compatible endpoint (e.g. OpenRouter:
+# https://openrouter.ai/api/v1). Leave unset to use the official OpenAI API.
+# When set, remember model names may need a provider prefix
+# (e.g. "openai/gpt-4o-mini" on OpenRouter) — see AGENT_MODEL /
+# GEN_MODEL_DEFAULT / GEN_MODEL_TOOL_INJECTION below.
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or None
+
 # --------------------------------------------------------------------
 # Model / embedding config (defaults == original hardcoded values)
 # --------------------------------------------------------------------
