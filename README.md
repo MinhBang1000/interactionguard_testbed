@@ -499,6 +499,44 @@ anomaly screen, a known-pattern classifier, and an expensive semantic LLM
 auditor, each stage escalating only what the previous one couldn't decide)
 — this is what you get and why it's shaped this way:
 
+### 10.1 Handoff Procedure — Copying Traces Into a Downstream Project
+
+If the downstream project owns its own split (train/val/test ratios,
+group-based splitting by prompt to avoid leakage) and its own prefix
+expansion (`n` reasoning steps -> `n+1` samples, with per-attack-type
+"reveal position" labeling — i.e. everything this repo's own
+`build_prefix_dataset.py` also does, just with different rules), then
+**this repo's job stops at raw trace collection.** `data/processed/*` is
+not needed by that downstream project at all — only the 5 files in
+`data/traces/` are.
+
+**What to copy, verbatim, no transformation needed:**
+
+```
+data/traces/benign_traces.jsonl               -> <downstream>/data/raw/benign_traces.jsonl
+data/traces/prompt_injection_traces.jsonl     -> <downstream>/data/raw/prompt_injection_traces.jsonl
+data/traces/rag_poison_traces.jsonl           -> <downstream>/data/raw/rag_poison_traces.jsonl
+data/traces/tool_injection_traces.jsonl       -> <downstream>/data/raw/tool_injection_traces.jsonl
+data/traces/correlated_injection_traces.jsonl -> <downstream>/data/raw/correlated_injection_traces.jsonl
+```
+
+The filenames already match a downstream `data/raw/` convention exactly.
+Schema per trace record: `id` (unique, becomes the `{id}_stepN` prefix-sample
+prefix downstream), `prompt`, `reasoning_steps` (list of
+`{"node": "retrieve" | "agent" | "tools", "type": "agent" | "tool", "content": ...}`,
+plus `"tool": "<tool_name>"` on `type=="tool"` steps — see §9.4), `label`
+(0/1), `attack_type` (`"prompt" | "rag" | "tool" | "correlated" | null`).
+
+One schema note worth being explicit about: a tool-call step's `node` is
+always the literal LangGraph node name `"tools"` (every tool runs through
+one shared graph node — see §3), **never** `"tool:<name>"` as a single
+string; the actual tool name is the separate `"tool"` field. This repo does
+not change that (it is the real, original shape of the data, produced by
+LangGraph's own event stream, not a bug), and confirmed compatible as-is:
+a downstream consumer should key off `type == "tool"` (+ the `tool` field
+for the tool name) rather than string-matching `node.startswith("tool:")`.
+No transformation is applied here before handoff.
+
 - **The unit of data is the fused sequence, not a channel.** Every prefix
   sample in `data/processed/*.jsonl` (`content` field) already interleaves
   prompt, retrieved context, tool calls and reasoning into one string via
